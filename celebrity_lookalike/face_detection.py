@@ -51,7 +51,7 @@ class FaceDetection:
         Returns tuple of (encoding, bounding_box) for each face in image.
         """
 
-        results = self.capture_output(self.face_detector.detect_faces)(img)
+        results = self.face_detector.detect_faces(img)
         if not results:
             print("No detected faces")
             return None, None
@@ -94,8 +94,5 @@ class FaceDetection:
         face_descriptors = self.get_face_descriptors(img)
         for index, face_descriptor in enumerate(face_descriptors):
             enc, bbox = face_descriptor
-            img = cv2.rectangle(img.astype(np.uint8), bbox, (255,0,0), 2)
-            temp_data = {}
-            temp_data["bbox"] = bbox
             results = ann_index.get_nns_by_vector(enc, 10, search_k=-1, include_distances=True)
             return results

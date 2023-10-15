@@ -3,3 +3,4 @@ ann_index.ann
 *.zip
 data/
 *.jpeg
+.idea/

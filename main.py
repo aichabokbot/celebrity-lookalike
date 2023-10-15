@@ -20,9 +20,8 @@ face_detection = FaceDetection(
     )
 
 ann_index = AnnoyIndex(2048, "angular")
-Parallel(n_jobs=20, prefer="threads")(
-    delayed(face_detection.compute_embeddings)(ann_index, id, filename)
-    for id, filename in tqdm(id_to_images.items())
-)
+for id, filename in tqdm(id_to_images.items()):
+    face_detection.compute_embeddings(ann_index, id, filename)
+
 ann_index.build(20, n_jobs=-1)
 ann_index.save("ann_index.ann")

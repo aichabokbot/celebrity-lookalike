@@ -50,8 +50,8 @@ class FaceDetection:
         img: array of pixels
         Returns tuple of (encoding, bounding_box) for each face in image.
         """
-
-        results = self.face_detector.detect_faces(img)
+        func = self.face_detector.detect_faces
+        results = self.capture_output(func)(img)
         if not results:
             print("No detected faces")
             return None, None
@@ -82,8 +82,10 @@ class FaceDetection:
             if len(face_descriptors) > 1:
                 print(f"Warning: more than two faces found in {filename}")
                 continue
-            embedding = np.array(face_descriptors[0][0])
-            embedding += embedding
+            if counter == 0:
+              embedding = np.array(face_descriptors[0][0])
+            else:
+              embedding += np.array(face_descriptors[0][0])
             counter += 1
         if counter != 0:
             embedding /= counter
@@ -94,5 +96,8 @@ class FaceDetection:
         face_descriptors = self.get_face_descriptors(img)
         for index, face_descriptor in enumerate(face_descriptors):
             enc, bbox = face_descriptor
+            img = cv2.rectangle(img.astype(np.uint8), bbox, (255,0,0), 2)
+            temp_data = {}
+            temp_data["bbox"] = bbox
             results = ann_index.get_nns_by_vector(enc, 10, search_k=-1, include_distances=True)
             return results
